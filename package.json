@@ -1,12 +1,12 @@
 {
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
   "dependencies": {
     "three": "^0.180.0"
   },
   "devDependencies": {
     "vite": "^7.1.5"
-  },
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build"
   }
 }
