@@ -1,0 +1,40 @@
+<html>
+<head>
+	<title>Sharktronaunts Login</title>
+	<script type="text/javascript" src="js/md5.js"></script>
+	<script type="text/javascript" src="js/code.js"></script>
+    <link href="css/login.css" rel="stylesheet">	
+    <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+</head>
+<body>
+
+<a href="index.html"><img id="logo" src="images/logo.png" alt="Sharktronauts Logo"></a>
+
+
+<div id="loginDiv">
+    <h1 id="title"> LOGIN </h1>
+	<input type="text" id="loginName" placeholder="Username" /><br />
+	<input type="password" id="loginPassword" placeholder="Password"/><br />
+	<button type="button" id="loginButton" class="buttons" onclick="doLogin();"> Login </button>
+	<span id="loginResult"></span>
+        <p id="noAccountText"> Don't have an account?
+        <button type="button" id="registerHereButton" onclick="toggleRegister(true);">Register here</button>
+        </p>
+</div>
+
+<div id="registerDiv">
+	<h1 id="title"> REGISTER </h1>
+	<input type="text" id="regFirstName" placeholder="First Name" /><br />
+	<input type="text" id="regLastName" placeholder="Last Name" /><br />
+	<input type="text" id="regLogin" placeholder="Username" /><br />
+	<input type="password" id="regPassword" placeholder="Password" /><br />
+	<button type="button" class="buttons" onclick="doRegister();"> Register </button>
+	<span id="registerResult"></span>
+        <p id="noAccountText"> Already have an account? 
+        <button type="button" id="registerHereButton" onclick="toggleRegister(false);">Login here</button>
+        </p>
+</div>
+
+</body>
+</html>

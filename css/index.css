@@ -1,0 +1,51 @@
+/* page background + body font style */
+body 
+{
+    background-color: #707070;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* adjusts size of logo top left */
+#logo {
+    width: 10%;
+    height: auto;
+    left: 0;
+}
+
+/* slogan text */
+#intro {
+    font-size: 2.5vw;
+    margin: 2% 2%;
+    text-align: center;
+    color: #FFFFFF;
+}
+
+/* title text */
+#title 
+{
+    font-size: 4vw;
+    margin-bottom: auto;
+    text-align: center;
+    font-family: 'Orbitron', sans-serif;
+    color: #FFFFFF;
+}
+
+/* login.signup button */
+.buttons
+{
+    margin-top: 50px;
+    font-size: 30px;
+    border-radius: 25px;
+    width: 25%;
+    margin-left: 38%;
+    margin-bottom: 15px;
+    color: #FFFFFF;
+    background-color: #335AAE
+}
+
+/* button hovered */
+.buttons:hover{
+    background-color: #335AAE;
+    color: #FFFFFF;
+    opacity: 50%;
+}
