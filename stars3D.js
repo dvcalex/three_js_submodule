@@ -1,12 +1,5 @@
 ﻿import * as THREE from 'three';
 
-/**
- * Generates a star field.
- * @param {number} amount - Number of stars
- * @param {number} spread - Distance spread of stars
- * @param {number} size - Base size of stars
- * @returns {Object} { points, update } - THREE.Points object and update function
- */
 export function genStars(amount = 1000, spread = 1000, size = 1.5) {
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(amount * 3);
