@@ -1,4 +1,6 @@
 ﻿import * as THREE from 'three';
+import * as star3D from './star3D';
+import * as asteroid3D from './asteroid3D';
 
 const renderer = new THREE.WebGLRenderer({antialias: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -21,29 +23,15 @@ camera.position.set(0, 0, 30);
 const axesHelper = new THREE.AxesHelper(4);
 scene.add(axesHelper);
 
-
-// star field using shader material
-const starGeometry = new THREE.BufferGeometry();
-const starCount = 5000;
-const positions = new Float32Array(starCount * 3);
-
-for (let i = 0; i < starCount * 3; i++)
-{
-    positions[i] = (Math.random() - 0.5) * 2000; // spread stars far
-}
-
-starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.7 });
-const stars = new THREE.Points(starGeometry, starMaterial);
-scene.add(stars);
-
-
+const starCount = 5000
+const stars = star3D.genStars(starCount, 2000)
+scene.add(stars.points);
 
 const speed = 1; // units per frame
 
 function animate()
 {
-    const positions = starGeometry.attributes.position.array;
+    const positions = stars.geometry.attributes.position.array;
     for (let i = 0; i < starCount * 3; i += 3)
     {
         const z = i + 2;
@@ -54,7 +42,7 @@ function animate()
         }
         positions[z] += speed
     }
-    starGeometry.attributes.position.needsUpdate = true;
+    stars.geometry.attributes.position.needsUpdate = true;
 
     renderer.render(scene, camera);
 }
