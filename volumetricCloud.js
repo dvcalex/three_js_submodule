@@ -3,76 +3,98 @@ import * as THREE from 'three';
 import { ImprovedNoise } from 'three/examples/jsm/math/ImprovedNoise.js';
 import {vec3} from "three/tsl";
 
-export function genCloud(geoScale, threshold, opacity, range, steps, noiseScale = 0.05)
+export class VolumeCloud
 {
-    let mesh;
-    // Texture
+    mesh;
+    spread;
 
-    const size = 128;
+    constructor(geoScale, spread, threshold, opacity, range, steps, noiseScale = 0.05)
+    {
+        this.spread = spread;
 
-    const data = new Uint8Array( size * size * size );
+        const size = 128;
+        const data = new Uint8Array( size * size * size );
 
-    let i = 0;
-    const perlin = new ImprovedNoise();
-    const vector = new THREE.Vector3();
+        let i = 0;
+        const perlin = new ImprovedNoise();
+        const vector = new THREE.Vector3();
 
-    for ( let z = 0; z < size; z ++ ) {
+        for ( let z = 0; z < size; z ++ ) {
 
-        for ( let y = 0; y < size; y ++ ) {
+            for ( let y = 0; y < size; y ++ ) {
 
-            for ( let x = 0; x < size; x ++ ) {
+                for ( let x = 0; x < size; x ++ ) {
 
-                const d = 1.0 - vector.set( x, y, z ).subScalar( size / 2 ).divideScalar( size ).length();
-                data[ i ] = ( 128 + 128 * perlin.noise( x * noiseScale / 1.5, y * noiseScale, z * noiseScale / 1.5 ) ) * d * d;
-                i ++;
-
+                    const d = 1.0 - vector.set( x, y, z ).subScalar( size / 2 ).divideScalar( size ).length();
+                    data[ i ] = ( 128 + 128 * perlin.noise( x * noiseScale / 1.5, y * noiseScale, z * noiseScale / 1.5 ) ) * d * d;
+                    i ++;
+                }
             }
-
         }
 
+        const texture = new THREE.Data3DTexture( data, size, size, size );
+        texture.format = THREE.RedFormat;
+        texture.minFilter = THREE.LinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.unpackAlignment = 1;
+        texture.needsUpdate = true;
+
+        const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+        const material = new THREE.RawShaderMaterial( {
+            glslVersion: THREE.GLSL3,
+            uniforms: {
+                base: { value: new THREE.Color( 0x798aa0 ) },
+                map: { value: texture },
+                cameraPos: { value: new THREE.Vector3() },
+                threshold: { value: 0.25 },
+                opacity: { value: 0.25 },
+                range: { value: 0.1 },
+                steps: { value: 100 },
+                frame: { value: 0 }
+            },
+            vertexShader,
+            fragmentShader,
+            side: THREE.BackSide,
+            transparent: true
+        } );
+
+        this.mesh = new THREE.Mesh( geometry, material );
+
+        // update mesh
+        material.uniforms.threshold.value = threshold;
+        material.uniforms.opacity.value = opacity;
+        material.uniforms.range.value = range;
+        material.uniforms.steps.value = steps;
+
+        this.mesh.geometry.scale(geoScale, geoScale, geoScale)
+
+        this.#initPosition();
     }
 
-    const texture = new THREE.Data3DTexture( data, size, size, size );
-    texture.format = THREE.RedFormat;
-    texture.minFilter = THREE.LinearFilter;
-    texture.magFilter = THREE.LinearFilter;
-    texture.unpackAlignment = 1;
-    texture.needsUpdate = true;
+    update(delta)
+    {
+        // positioning
+        this.mesh.position.add(new THREE.Vector3(0, 0, delta));
+        if (this.mesh.position.z > this.spread / 2)
+        {
+            this.mesh.position.z = -1 * this.spread / 2;
+        }
 
-    // Material
+        // color change
+        this.mesh.material.uniforms.base.value.set(0x19F72F);
+        this.mesh.material.uniforms.base.needsUpdate = true;
+    }
 
-    const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-    const material = new THREE.RawShaderMaterial( {
-        glslVersion: THREE.GLSL3,
-        uniforms: {
-            base: { value: new THREE.Color( 0x798aa0 ) },
-            map: { value: texture },
-            cameraPos: { value: new THREE.Vector3() },
-            threshold: { value: 0.25 },
-            opacity: { value: 0.25 },
-            range: { value: 0.1 },
-            steps: { value: 100 },
-            frame: { value: 0 }
-        },
-        vertexShader,
-        fragmentShader,
-        side: THREE.BackSide,
-        transparent: true
-    } );
+    #initPosition()
+    {
+        this.mesh.position.set(new THREE.Vector3((Math.random() - 0.5) * this.spread));
+    }
 
-    mesh = new THREE.Mesh( geometry, material );
+    static hsvToRgb()
+    {
 
-    // update mesh
-    material.uniforms.threshold.value = threshold;
-    material.uniforms.opacity.value = opacity;
-    material.uniforms.range.value = range;
-    material.uniforms.steps.value = steps;
-
-    mesh.geometry.scale(geoScale, geoScale, geoScale)
-
-    return mesh;
+    }
 }
-
 
 const vertexShader = /* glsl */`
 					in vec3 position;
@@ -207,3 +229,4 @@ const fragmentShader = /* glsl */`
 
 					}
 				`;
+

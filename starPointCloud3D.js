@@ -62,7 +62,9 @@ export class StarPointCloud3D
             pos[i + 2] += delta; // move stars along z
 
             if (pos[i + 2] > this.spread / 2)
+            {
                 pos[i + 2] = -1 * this.spread / 2;
+            }
         }
         this.geometry.attributes.position.needsUpdate = true;
     }

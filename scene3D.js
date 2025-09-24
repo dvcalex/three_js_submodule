@@ -30,8 +30,8 @@ const ambient = new THREE.AmbientLight(0x555555, 0.1);
 scene.add(ambient);
 
 // Add fog
-scene.fog = new THREE.FogExp2(0x000000, 0.005);
-renderer.setClearColor(scene.fog.color);
+//scene.fog = new THREE.FogExp2(0x000000, 0.005);
+//renderer.setClearColor(scene.fog.color);
 
 // Generate clouds
 let clouds = [];
@@ -39,10 +39,9 @@ const cloudsAmount = 3;
 for (let i = 0; i < cloudsAmount; i++)
 {
     const geometryScale = 4;
-    const cloudMesh = CLOUD.genCloud(geometryScale, 0.13, 0.05, 0.01, 20)
-    scene.add(cloudMesh);
-    cloudMesh.position.set(0, 0, -1 * i * geometryScale);
-    clouds.push(cloudMesh);
+    const cloud = new CLOUD.VolumeCloud(geometryScale, 20, 0.13, 0.05, 0.01, 20);
+    scene.add(cloud.mesh);
+    clouds.push(cloud);
 }
 
 // Generate stars
@@ -57,6 +56,11 @@ function animate()
 {
     // Handle stars animation
     stars.update(tick);
+
+    for (let i = 0; i < clouds.length; i++)
+    {
+        clouds[i].update(tick);
+    }
 
     renderer.render(scene, camera);
 }
