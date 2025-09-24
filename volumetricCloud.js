@@ -41,7 +41,40 @@ export function genCloud(geoScale, threshold, opacity, range, steps, noiseScale 
 
     // Material
 
-    const vertexShader = /* glsl */`
+    const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+    const material = new THREE.RawShaderMaterial( {
+        glslVersion: THREE.GLSL3,
+        uniforms: {
+            base: { value: new THREE.Color( 0x798aa0 ) },
+            map: { value: texture },
+            cameraPos: { value: new THREE.Vector3() },
+            threshold: { value: 0.25 },
+            opacity: { value: 0.25 },
+            range: { value: 0.1 },
+            steps: { value: 100 },
+            frame: { value: 0 }
+        },
+        vertexShader,
+        fragmentShader,
+        side: THREE.BackSide,
+        transparent: true
+    } );
+
+    mesh = new THREE.Mesh( geometry, material );
+
+    // update mesh
+    material.uniforms.threshold.value = threshold;
+    material.uniforms.opacity.value = opacity;
+    material.uniforms.range.value = range;
+    material.uniforms.steps.value = steps;
+
+    mesh.geometry.scale(geoScale, geoScale, geoScale)
+
+    return mesh;
+}
+
+
+const vertexShader = /* glsl */`
 					in vec3 position;
 
 					uniform mat4 modelMatrix;
@@ -62,7 +95,7 @@ export function genCloud(geoScale, threshold, opacity, range, steps, noiseScale 
 					}
 				`;
 
-    const fragmentShader = /* glsl */`
+const fragmentShader = /* glsl */`
 					precision highp float;
 					precision highp sampler3D;
 
@@ -174,37 +207,3 @@ export function genCloud(geoScale, threshold, opacity, range, steps, noiseScale 
 
 					}
 				`;
-
-    const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-    const material = new THREE.RawShaderMaterial( {
-        glslVersion: THREE.GLSL3,
-        uniforms: {
-            base: { value: new THREE.Color( 0x798aa0 ) },
-            map: { value: texture },
-            cameraPos: { value: new THREE.Vector3() },
-            threshold: { value: 0.25 },
-            opacity: { value: 0.25 },
-            range: { value: 0.1 },
-            steps: { value: 100 },
-            frame: { value: 0 }
-        },
-        vertexShader,
-        fragmentShader,
-        side: THREE.BackSide,
-        transparent: true
-    } );
-
-    mesh = new THREE.Mesh( geometry, material );
-
-    // update mesh
-    material.uniforms.threshold.value = threshold;
-    material.uniforms.opacity.value = opacity;
-    material.uniforms.range.value = range;
-    material.uniforms.steps.value = steps;
-
-    material.dithering = true
-
-    mesh.geometry.scale(geoScale, geoScale, geoScale)
-
-    return mesh;
-}
