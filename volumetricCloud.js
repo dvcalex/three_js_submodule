@@ -63,12 +63,11 @@ export class VolumeCloud
             vertexShader,
             fragmentShader,
             side: THREE.BackSide,
-            blending: THREE.MultiplyBlending,
+            blending: THREE.AdditiveBlending,
             transparent: true,
             depthWrite: false,
             fog: true
         });
-        material.premultipliedAlpha = true;
 
         this.mesh = new THREE.Mesh( geometry, material );
 
