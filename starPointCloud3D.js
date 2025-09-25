@@ -125,6 +125,7 @@ export class StarPointCloud3D {
         const sizes = this.geometry.attributes.size.array;
         const alphas = this.geometry.attributes.alpha.array;
         const lifespans = this.geometry.attributes.lifespan.array;
+        const colors = this.geometry.attributes.color.array;
 
         // Update all particles
         for (let i = 0; i < pos.length / 3; i++) {
@@ -148,7 +149,6 @@ export class StarPointCloud3D {
                 if (Math.random() > 0.2) { // Adjust this value to change trail density
                     // Find the next available trail slot to recycle
                     const trailIndex = this.#amount + this.#nextTrailSlot;
-                    const colors = this.geometry.attributes.color.array; // Get access to the color buffer
 
                     // Activate it at the star's current position
                     pos[trailIndex * 3] = pos[i * 3];

@@ -100,7 +100,6 @@ export class VolumeCloud
             this.#initRotation();
             //this.mesh.position.z = -1 * this.spread * this.#zSpreadMultiplier / 2;
         }
-        this.mesh.position.needsUpdate = true;
 
         // color change
         let rgb = VolumeCloud.hsvToRgb([
@@ -108,7 +107,6 @@ export class VolumeCloud
             1,
             1]);
         this.mesh.material.uniforms.base.value.setRGB(rgb[0], rgb[1], rgb[2]);
-        this.mesh.material.uniforms.base.needsUpdate = true;
 
         this.mesh.material.uniforms.frame.value ++;
         this.#timeElapsed += delta * colorShiftSpeed;
