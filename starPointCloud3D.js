@@ -47,7 +47,8 @@ export class StarPointCloud3D
             map: this.#createTexture(),
             transparent: true,
             blending: THREE.AdditiveBlending,
-            depthWrite: false
+            depthWrite: false,
+            fog: true
         });
 
         // create point cloud object
@@ -57,6 +58,7 @@ export class StarPointCloud3D
     update(delta)
     {
         const pos = this.geometry.attributes.position.array;
+
         for (let i = 0; i < this.#amount * 3; i += 3)
         {
             pos[i + 2] += delta; // move stars along z
