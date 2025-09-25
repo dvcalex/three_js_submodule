@@ -68,6 +68,7 @@ export class VolumeCloud
             depthWrite: false,
             fog: true
         });
+        material.premultipliedAlpha = true;
 
         this.mesh = new THREE.Mesh( geometry, material );
 
