@@ -80,11 +80,12 @@ export class VolumeCloud
         this.mesh.scale.set(this.geoScale, this.geoScale, this.geoScale);
 
         this.#initPosition();
-        this.mesh.position.set(
-            this.mesh.position.x,
-            this.mesh.position.y,
-            (Math.random() - 0.5) * this.spread * this.#zSpreadMultiplier
-            );
+        // this.mesh.position.set(
+        //     this.mesh.position.x,
+        //     this.mesh.position.y,
+        //     (Math.random() - 0.5) * this.spread * this.#zSpreadMultiplier
+        //     );
+        this.#initRotation();
     }
 
     update(delta, animSpeed, colorShiftSpeed, cameraPos)
@@ -96,6 +97,7 @@ export class VolumeCloud
         if (this.mesh.position.z > this.spread / 2 + this.geoScale)
         {
             this.#initPosition();
+            this.#initRotation();
             //this.mesh.position.z = -1 * this.spread * this.#zSpreadMultiplier / 2;
         }
         this.mesh.position.needsUpdate = true;
@@ -119,6 +121,16 @@ export class VolumeCloud
         const z = -1 * this.spread * this.#zSpreadMultiplier / 2;
 
         this.mesh.position.set( x, y, z );
+    }
+
+    #initRotation() {
+        // Generate a random angle in radians for each axis
+        const x = Math.random() * Math.PI * 2;
+        const y = Math.random() * Math.PI * 2;
+        const z = Math.random() * Math.PI * 2;
+
+        // Set the mesh's rotation
+        this.mesh.rotation.set(x, y, z);
     }
 
     static hsvToRgb(hsv)

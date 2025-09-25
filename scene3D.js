@@ -18,55 +18,66 @@ const camera = new THREE.PerspectiveCamera(
     1000
 );
 
-const origin = new THREE.Vector3(0, 0, 150);
+const origin = new THREE.Vector3(0, 0, 80);
 
 // z axis points at camera (right-handed coordinate system)
 camera.position.set(origin.x, origin.y, origin.z);
 camera.lookAt(0, 0, 0);
 
 // Sets orbit control to move the camera around.
-//const orbit = new OrbitControls(camera, renderer.domElement);
-//orbit.target.set(origin.x, origin.y, origin.z);
-//camera.position.add(new THREE.Vector3(0, 0, 10));
-//orbit.update(); // Has to be done everytime we update the camera position.
+// const orbit = new OrbitControls(camera, renderer.domElement);
+// orbit.target.set(origin.x, origin.y, origin.z);
+// camera.position.add(new THREE.Vector3(0, 0, 10));
+// orbit.update(); // Has to be done everytime we update the camera position.
 
 
 //let mouse = { x: 0, y: 0 };
 
 // Creates an axes helper with an axis length of 4.
-//const axesHelper = new THREE.AxesHelper(4);
-//axesHelper.position.set(origin.x, origin.y, origin.z);
-//scene.add(axesHelper);
+// const axesHelper = new THREE.AxesHelper(4);
+// axesHelper.position.set(origin.x, origin.y, origin.z);
+// scene.add(axesHelper);
 
 // Create lights
 const ambient = new THREE.AmbientLight(0x555555, 0.1);
 scene.add(ambient);
 
 // Add fog
-scene.fog = new THREE.Fog(0x000000, 0.1, 400);
+scene.fog = new THREE.Fog(0x000000, 0.1, 160);
 scene.background = new THREE.Color(scene.fog.color); // Sets background to fog color
 
 // Generate clouds
 let clouds = [];
-const cloudsAmount = 5;
+const cloudsAmount = 3;
+const cloudSpacing = 120;
 for (let i = 0; i < cloudsAmount; i++)
 {
     const cloud = new CLOUD.VolumeCloud(
-        150,
-        200,
+        80,
+        cloudSpacing,
         0.45,
         0.45,
         0.33,
-        20);
+        10
+    );
+
+    const zPos = (i - (cloudsAmount - 1) / 2) * cloudSpacing;
+
+    cloud.mesh.position.set(
+        cloud.mesh.position.x,
+        cloud.mesh.position.y,
+        zPos
+    );
+
     scene.add(cloud.mesh);
     clouds.push(cloud);
 }
 
 // padding for camera
-const spreadPadding = 50;
+const spreadPadding = 5;
 // Generate stars
 const stars = new STAR.StarPointCloud3D(
-    1000,
+    100,
     2 * (origin.z + spreadPadding),
     3);
 scene.add(stars.points);
