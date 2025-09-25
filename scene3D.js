@@ -71,18 +71,9 @@ const stars = new STAR.StarPointCloud3D(
 scene.add(stars.points);
 
 
-// explicitly define rendering order
-stars.points.renderOrder = 1;
-
-for (let i = 0; i < clouds.length; i++) {
-    clouds[i].mesh.renderOrder = 2; // clouds render after stars
-}
-
-
-
 const clock = new THREE.Clock();
-const animSpeed = 50;
-const cloudColorShiftSpeed = 1;
+const animSpeed = 25;
+const cloudColorShiftSpeed = 1.7;
 function animate()
 {
     const delta = Math.min(clock.getDelta(), 1 / 30);

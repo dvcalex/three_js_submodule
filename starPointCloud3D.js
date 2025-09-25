@@ -40,6 +40,8 @@ export class StarPointCloud3D {
                 positions[i * 3 + 2] = (Math.random() - 0.5) * this.spread;
 
                 const col = new THREE.Color(palette[Math.floor(Math.random() * palette.length)]);
+                col.multiplyScalar(0.4);
+
                 colors[i * 3] = col.r;
                 colors[i * 3 + 1] = col.g;
                 colors[i * 3 + 2] = col.b;
@@ -110,7 +112,7 @@ export class StarPointCloud3D {
             `,
             vertexColors: true,
             transparent: true,
-            blending: THREE.NormalBlending,
+            blending: THREE.AdditiveBlending,
             depthWrite: false,
             fog: true
         });

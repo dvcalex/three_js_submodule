@@ -63,7 +63,7 @@ export class VolumeCloud
             vertexShader,
             fragmentShader,
             side: THREE.BackSide,
-            blending: THREE.NormalBlending,
+            blending: THREE.AdditiveBlending,
             transparent: true,
             depthWrite: false,
             fog: true
