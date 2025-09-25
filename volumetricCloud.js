@@ -13,7 +13,7 @@ export class VolumeCloud
 
     constructor(geoScale, spread, threshold, opacity, range, steps, noiseScale = 0.05)
     {
-        this.#timeElapsed = 0;
+        this.#timeElapsed = Math.random() * 360;
         this.spread = spread;
         this.geoScale = geoScale;
 
@@ -63,7 +63,7 @@ export class VolumeCloud
             vertexShader,
             fragmentShader,
             side: THREE.BackSide,
-            blending: THREE.AdditiveBlending,
+            blending: THREE.MultiplyBlending,
             transparent: true,
             depthWrite: false,
             fog: true
@@ -102,7 +102,7 @@ export class VolumeCloud
 
         // color change
         let rgb = VolumeCloud.hsvToRgb([
-            0.02 * this.#timeElapsed % 360,
+            this.#timeElapsed % 360,
             1,
             1]);
         this.mesh.material.uniforms.base.value.setRGB(rgb[0], rgb[1], rgb[2]);

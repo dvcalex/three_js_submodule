@@ -74,7 +74,7 @@ scene.add(stars.points);
 
 const clock = new THREE.Clock();
 const animSpeed = 25;
-const cloudColorShiftSpeed = 1.7;
+const cloudColorShiftSpeed = 4;
 function animate()
 {
     const delta = Math.min(clock.getDelta(), 1 / 30);
