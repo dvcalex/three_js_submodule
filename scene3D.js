@@ -7,6 +7,7 @@ const renderer = new THREE.WebGLRenderer({antialias: true});
 //renderer.setPixelRatio( window.devicePixelRatio );
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setAnimationLoop(animate);
+renderer.domElement.id = 'three-canvas-background';
 document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
