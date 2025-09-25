@@ -24,18 +24,18 @@ camera.position.set(origin.x, origin.y, origin.z);
 camera.lookAt(0, 0, 0);
 
 // Sets orbit control to move the camera around.
-const orbit = new OrbitControls(camera, renderer.domElement);
-orbit.target.set(origin.x, origin.y, origin.z);
-camera.position.add(new THREE.Vector3(0, 0, 10));
-orbit.update(); // Has to be done everytime we update the camera position.
+//const orbit = new OrbitControls(camera, renderer.domElement);
+//orbit.target.set(origin.x, origin.y, origin.z);
+//camera.position.add(new THREE.Vector3(0, 0, 10));
+//orbit.update(); // Has to be done everytime we update the camera position.
 
 
-let mouse = { x: 0, y: 0 };
+//let mouse = { x: 0, y: 0 };
 
 // Creates an axes helper with an axis length of 4.
-const axesHelper = new THREE.AxesHelper(4);
-axesHelper.position.set(origin.x, origin.y, origin.z);
-scene.add(axesHelper);
+//const axesHelper = new THREE.AxesHelper(4);
+//axesHelper.position.set(origin.x, origin.y, origin.z);
+//scene.add(axesHelper);
 
 // Create lights
 const ambient = new THREE.AmbientLight(0x555555, 0.1);
@@ -72,16 +72,18 @@ scene.add(stars.points);
 
 
 
-
-const tick = 0.2; // units per frame
+const clock = new THREE.Clock();
+const timeScale = 20;
 function animate()
 {
+    const delta = clock.getDelta() * timeScale;
+
     // Handle stars animation
-    stars.update(tick);
+    stars.update(delta, camera.position);
 
     for (let i = 0; i < clouds.length; i++)
     {
-        clouds[i].update(tick, camera.position);
+        clouds[i].update(delta, camera.position);
     }
 
     renderer.render(scene, camera);
@@ -93,8 +95,8 @@ window.addEventListener('resize', function () {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-window.addEventListener('mousemove', (event) => {
-    // Normalize mouse coordinates from -1 to 1
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-});
+// window.addEventListener('mousemove', (event) => {
+//     // Normalize mouse coordinates from -1 to 1
+//     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+//     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+// });

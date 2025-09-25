@@ -55,7 +55,7 @@ export class StarPointCloud3D
         this.points = new THREE.Points(this.geometry, this.material);
     }
 
-    update(delta)
+    update(delta, cameraPos)
     {
         const pos = this.geometry.attributes.position.array;
 
@@ -63,7 +63,7 @@ export class StarPointCloud3D
         {
             pos[i + 2] += delta; // move stars along z
 
-            if (pos[i + 2] > this.spread / 2)
+            if (pos[i + 2] > cameraPos.z + 20)
             {
                 pos[i + 2] = -1 * this.spread / 2;
             }
