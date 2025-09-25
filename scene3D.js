@@ -65,25 +65,43 @@ for (let i = 0; i < cloudsAmount; i++)
 const spreadPadding = 50;
 // Generate stars
 const stars = new STAR.StarPointCloud3D(
-    2500,
+    1000,
     2 * (origin.z + spreadPadding),
     3);
 scene.add(stars.points);
 
 
+// explicitly define rendering order
+stars.points.renderOrder = 1;
+
+for (let i = 0; i < clouds.length; i++) {
+    clouds[i].mesh.renderOrder = 2; // clouds render after stars
+}
+
+
 
 const clock = new THREE.Clock();
-const timeScale = 20;
+const animSpeed = 50;
+const cloudColorShiftSpeed = 1;
 function animate()
 {
-    const delta = clock.getDelta() * timeScale;
+    const delta = Math.min(clock.getDelta(), 1 / 30);
 
     // Handle stars animation
-    stars.update(delta, camera.position);
+    stars.update(
+        delta,
+        animSpeed,
+        camera.position
+    );
 
     for (let i = 0; i < clouds.length; i++)
     {
-        clouds[i].update(delta, camera.position);
+        clouds[i].update(
+            delta,
+            animSpeed,
+            cloudColorShiftSpeed,
+            camera.position
+        );
     }
 
     renderer.render(scene, camera);

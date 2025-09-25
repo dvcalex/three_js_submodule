@@ -63,6 +63,7 @@ export class VolumeCloud
             vertexShader,
             fragmentShader,
             side: THREE.BackSide,
+            blending: THREE.NormalBlending,
             transparent: true,
             depthWrite: false,
             fog: true
@@ -86,13 +87,13 @@ export class VolumeCloud
             );
     }
 
-    update(delta, cameraPos)
+    update(delta, animSpeed, colorShiftSpeed, cameraPos)
     {
         //     cloud.mesh.position.set(0, 0, -1 * i * geometryScale);
         this.mesh.material.uniforms.cameraPos.value.copy(cameraPos);
 
-        this.mesh.position.z += delta;
-        if (this.mesh.position.z > cameraPos.z + this.geoScale)
+        this.mesh.position.z += delta * animSpeed;
+        if (this.mesh.position.z > this.spread / 2 + this.geoScale)
         {
             this.#initPosition();
             //this.mesh.position.z = -1 * this.spread * this.#zSpreadMultiplier / 2;
@@ -108,7 +109,7 @@ export class VolumeCloud
         this.mesh.material.uniforms.base.needsUpdate = true;
 
         this.mesh.material.uniforms.frame.value ++;
-        this.#timeElapsed += delta;
+        this.#timeElapsed += delta * colorShiftSpeed;
     }
 
     #initPosition()
