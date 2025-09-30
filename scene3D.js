@@ -3,26 +3,31 @@ import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
 import * as STAR from './starPointCloud3D';
 import * as CLOUD from './volumetricCloud';
 
-const renderer = new THREE.WebGLRenderer({antialias: true});
+
+if (!(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)))
+    BuildAndRunScene();
+
+function BuildAndRunScene() {
+    const renderer = new THREE.WebGLRenderer({antialias: true});
 //renderer.setPixelRatio( window.devicePixelRatio );
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setAnimationLoop(animate);
-renderer.domElement.id = 'three-canvas-background';
-document.body.appendChild(renderer.domElement);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setAnimationLoop(animate);
+    renderer.domElement.id = 'three-canvas-background';
+    document.body.appendChild(renderer.domElement);
 
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(
-    45,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(
+        45,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+    );
 
-const origin = new THREE.Vector3(0, 0, 80);
+    const origin = new THREE.Vector3(0, 0, 80);
 
 // z axis points at camera (right-handed coordinate system)
-camera.position.set(origin.x, origin.y, origin.z);
-camera.lookAt(0, 0, 0);
+    camera.position.set(origin.x, origin.y, origin.z);
+    camera.lookAt(0, 0, 0);
 
 // Sets orbit control to move the camera around.
 // const orbit = new OrbitControls(camera, renderer.domElement);
@@ -31,7 +36,7 @@ camera.lookAt(0, 0, 0);
 // orbit.update(); // Has to be done everytime we update the camera position.
 
 
-//let mouse = { x: 0, y: 0 };
+    let mouse = {x: 0, y: 0};
 
 // Creates an axes helper with an axis length of 4.
 // const axesHelper = new THREE.AxesHelper(4);
@@ -39,85 +44,93 @@ camera.lookAt(0, 0, 0);
 // scene.add(axesHelper);
 
 // Create lights
-const ambient = new THREE.AmbientLight(0x555555, 0.1);
-scene.add(ambient);
+    const ambient = new THREE.AmbientLight(0x555555, 0.1);
+    scene.add(ambient);
 
 // Add fog
-scene.fog = new THREE.Fog(0x000000, 0.1, 160);
-scene.background = new THREE.Color(scene.fog.color); // Sets background to fog color
+    scene.fog = new THREE.Fog(0x000000, 0.1, 160);
+    scene.background = new THREE.Color(scene.fog.color); // Sets background to fog color
 
 // Generate clouds
-let clouds = [];
-const cloudsAmount = 3;
-const cloudSpacing = 120;
-for (let i = 0; i < cloudsAmount; i++)
-{
-    const cloud = new CLOUD.VolumeCloud(
-        80,
-        cloudSpacing,
-        0.45,
-        0.45,
-        0.33,
-        10
-    );
-
-    const zPos = (i - (cloudsAmount - 1) / 2) * cloudSpacing;
-
-    cloud.mesh.position.set(
-        cloud.mesh.position.x,
-        cloud.mesh.position.y,
-        zPos
-    );
-
-    scene.add(cloud.mesh);
-    clouds.push(cloud);
-}
-
-// padding for camera
-const spreadPadding = 5;
-// Generate stars
-const stars = new STAR.StarPointCloud3D(
-    100,
-    2 * (origin.z + spreadPadding),
-    3);
-scene.add(stars.points);
-
-
-const clock = new THREE.Clock();
-const animSpeed = 25;
-const cloudColorShiftSpeed = 4;
-function animate()
-{
-    const delta = Math.min(clock.getDelta(), 1 / 30);
-
-    // Handle stars animation
-    stars.update(
-        delta,
-        animSpeed,
-        camera.position
-    );
-
-    for (let i = 0; i < clouds.length; i++)
-    {
-        clouds[i].update(
-            delta,
-            animSpeed,
-            cloudColorShiftSpeed,
-            camera.position
+    let clouds = [];
+    const cloudsAmount = 3;
+    const cloudSpacing = 120;
+    for (let i = 0; i < cloudsAmount; i++) {
+        const cloud = new CLOUD.VolumeCloud(
+            80,
+            cloudSpacing,
+            0.45,
+            0.45,
+            0.33,
+            10
         );
+
+        const zPos = (i - (cloudsAmount - 1) / 2) * cloudSpacing;
+
+        cloud.mesh.position.set(
+            cloud.mesh.position.x,
+            cloud.mesh.position.y,
+            zPos
+        );
+
+        scene.add(cloud.mesh);
+        clouds.push(cloud);
     }
 
-    renderer.render(scene, camera);
+// padding for camera
+    const spreadPadding = 5;
+// Generate stars
+    const stars = new STAR.StarPointCloud3D(
+        100,
+        2 * (origin.z + spreadPadding),
+        3);
+    scene.add(stars.points);
+
+
+    const clock = new THREE.Clock();
+    const animSpeed = 25;
+    const cloudColorShiftSpeed = 4;
+
+    function animate() {
+        const delta = Math.min(clock.getDelta(), 1 / 30);
+
+        const lookStrength = 2.5; // adjust sensitivity
+        const target = new THREE.Vector3(
+            mouse.x * lookStrength,
+            mouse.y * lookStrength,
+            0
+        );
+        camera.lookAt(target);
+
+        // Handle stars animation
+        stars.update(
+            delta,
+            animSpeed,
+            camera.position
+        );
+
+        for (let i = 0; i < clouds.length; i++) {
+            clouds[i].update(
+                delta,
+                animSpeed,
+                cloudColorShiftSpeed,
+                camera.position
+            );
+        }
+
+        renderer.render(scene, camera);
+    }
+
+    window.addEventListener('resize', function () {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    window.addEventListener('mousemove', (event) => {
+        // Normalize mouse coordinates from -1 to 1
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    });
 }
 
-window.addEventListener('resize', function () {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-});
-
-// window.addEventListener('mousemove', (event) => {
-//     // Normalize mouse coordinates from -1 to 1
-//     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-//     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-// });
